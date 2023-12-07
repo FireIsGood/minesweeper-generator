@@ -1,0 +1,5 @@
+# Rust output
+/target
+
+# Unrelated config files
+/.vscode
