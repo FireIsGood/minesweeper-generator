@@ -38,6 +38,17 @@ fn get_args() -> Option<MinesweeperArguments> {
     })
 }
 
+fn valid_arguments(args: &MinesweeperArguments) -> Result<(), String> {
+    if args.anti_mine_count < 0 || args.mine_count < 0 {
+        return Err("Negative mines".to_owned());
+    }
+    if args.width * args.height > 90 {
+        return Err("Board too large".to_owned());
+    }
+
+    Ok(())
+}
+
 fn get_random_tile(width: i32, height: i32) -> (usize, usize) {
     let random_width = rand::thread_rng().gen_range(0..width);
     let random_height = rand::thread_rng().gen_range(0..height);
@@ -179,6 +190,15 @@ fn main() {
         return;
     }
     let args = possible_args.unwrap();
+
+    // Exit for bad arguments
+    match valid_arguments(&args) {
+        Err(e) => {
+            println!("Error: {}", e);
+            return;
+        }
+        Ok(_) => {}
+    }
 
     // Debug info
     // println!("Spoiler character: {}", &args.spoiler_char);
