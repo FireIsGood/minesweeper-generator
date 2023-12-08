@@ -11,10 +11,10 @@ enum TileContent {
 
 struct MinesweeperArguments {
     spoiler_char: String,
-    width: u8,
-    height: u8,
-    mine_count: u8,
-    anti_mine_count: u8,
+    width: i32,
+    height: i32,
+    mine_count: i32,
+    anti_mine_count: i32,
 }
 
 type MinesweeperGrid = Vec<Vec<TileContent>>;
@@ -23,11 +23,11 @@ fn get_args() -> Option<MinesweeperArguments> {
     let args: Vec<String> = env::args().collect();
 
     let spoiler_char: String = args.get(1)?.into();
-    let width: u8 = args.get(2)?.parse().ok()?;
-    let height: u8 = args.get(3)?.parse().ok()?;
-    let mine_count: u8 = args.get(4)?.parse().ok()?;
+    let width: i32 = args.get(2)?.parse().ok()?;
+    let height: i32 = args.get(3)?.parse().ok()?;
+    let mine_count: i32 = args.get(4)?.parse().ok()?;
     // Default is 0
-    let anti_mine_count: u8 = args.get(5).unwrap_or(&"0".to_owned()).parse().ok()?;
+    let anti_mine_count: i32 = args.get(5).unwrap_or(&"0".to_owned()).parse().ok()?;
 
     Some(MinesweeperArguments {
         spoiler_char,
@@ -38,10 +38,10 @@ fn get_args() -> Option<MinesweeperArguments> {
     })
 }
 
-fn get_random_tile(width: u8, height: u8) -> (usize, usize) {
-    let random_width: usize = rand::thread_rng().gen_range(0..width).into();
-    let random_height: usize = rand::thread_rng().gen_range(0..height).into();
-    (random_width, random_height)
+fn get_random_tile(width: i32, height: i32) -> (usize, usize) {
+    let random_width = rand::thread_rng().gen_range(0..width);
+    let random_height = rand::thread_rng().gen_range(0..height);
+    (random_width as usize, random_height as usize)
 }
 
 fn generate_tile(grid: &mut MinesweeperGrid, args: &MinesweeperArguments, tile_type: TileContent) {
@@ -60,7 +60,7 @@ fn generate_tile(grid: &mut MinesweeperGrid, args: &MinesweeperArguments, tile_t
 
 fn generate_grid(args: &MinesweeperArguments) -> MinesweeperGrid {
     let mut grid: MinesweeperGrid =
-        vec![vec![TileContent::Empty; args.height.into()]; args.width.into()];
+        vec![vec![TileContent::Empty; args.height as usize]; args.width as usize];
 
     // Generate the mines
     for _ in 1..=args.mine_count {
@@ -99,11 +99,7 @@ fn print_grid(grid: MinesweeperGrid, args: MinesweeperArguments) {
     // Temporary basic print
     for x in 0..args.width {
         for y in 0..args.height {
-            let tile = grid
-                .get::<usize>(x.into())
-                .unwrap()
-                .get::<usize>(y.into())
-                .unwrap();
+            let tile = grid.get(x as usize).unwrap().get(y as usize).unwrap();
             print!("{}", args.spoiler_char);
             // Tile itself
             match tile {
