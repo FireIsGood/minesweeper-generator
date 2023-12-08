@@ -1,6 +1,6 @@
 use std::env;
 
-use rand::{seq::SliceRandom, Rng};
+use rand::Rng;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 enum TileContent {
@@ -38,7 +38,7 @@ fn get_args() -> Option<MinesweeperArguments> {
     })
 }
 
-fn get_random_tile(grid: &MinesweeperGrid, width: u8, height: u8) -> (usize, usize) {
+fn get_random_tile(width: u8, height: u8) -> (usize, usize) {
     let random_width: usize = rand::thread_rng().gen_range(0..width).into();
     let random_height: usize = rand::thread_rng().gen_range(0..height).into();
     (random_width, random_height)
@@ -46,7 +46,7 @@ fn get_random_tile(grid: &MinesweeperGrid, width: u8, height: u8) -> (usize, usi
 
 fn generate_tile(grid: &mut MinesweeperGrid, args: &MinesweeperArguments, tile_type: TileContent) {
     loop {
-        let (random_width, random_height) = get_random_tile(&grid, args.width, args.height);
+        let (random_width, random_height) = get_random_tile(args.width, args.height);
         let random_tile = grid[random_width][random_height];
         match random_tile {
             TileContent::Empty => {
