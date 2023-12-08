@@ -1,4 +1,3 @@
-#![allow(unused)]
 use std::env;
 
 use rand::{seq::SliceRandom, Rng};
