@@ -135,7 +135,7 @@ fn number_to_emoji((mines, anti_mines): (i32, i32), args: &MinesweeperArguments)
             let alternate_zero = match mines {
                 1 => ":first_place:",
                 2 => ":second_place:",
-                2 => ":third_place:",
+                3 => ":third_place:",
                 _ => ":medal:",
             };
             return alternate_zero.to_owned();
@@ -144,7 +144,7 @@ fn number_to_emoji((mines, anti_mines): (i32, i32), args: &MinesweeperArguments)
 
     // Case of number
     let converted_str = match total_mines {
-        ..=-8 | 8.. => "?",
+        ..=-9 | 9.. => "?",
         -8 => ":regional_indicator_h:",
         -7 => ":regional_indicator_g:",
         -6 => ":regional_indicator_f:",
