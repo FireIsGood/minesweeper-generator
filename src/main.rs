@@ -171,10 +171,10 @@ fn number_to_emoji((mines, anti_mines): (i32, i32), args: &MinesweeperArguments)
 fn main() {
     println!("Minesweeper generator!");
     let expanded_rules = "\
-    Zero tiles :zero: are actually 0\n\
-    Medals :medal: are a numbered combination of mines equaling zero (:first_place: is 1 mine 1 anti, :second_place: is 2 mine 2 anti, etc. to 3, further are generic)\n\
-    Number tiles :one: are a positive combination of mines\n\
-    Letter tiles :regional_indicator_a: are a negative combination of mines\n\
+    - Zero tiles :zero: are actually 0\n\
+    - Medals :medal: are a numbered combination of mines equaling zero (:first_place: is 1 mine 1 anti, :second_place: is 2 mine 2 anti, etc. to 3, further are generic)\n\
+    - Number tiles :one: are a positive combination of mines\n\
+    - Letter tiles :regional_indicator_a: are a negative combination of mines\n\
     ";
     let possible_args = get_args();
 
