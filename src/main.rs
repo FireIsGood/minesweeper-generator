@@ -37,12 +37,6 @@ fn main() {
     }
     let grid = maybe_grid.unwrap();
 
-    // Debug info
-    // println!("Spoiler character: {}", &args.spoiler_char);
-    // println!("Width: {}", &args.width);
-    // println!("Height: {}", &args.height);
-    // println!("Mines: {}", &args.mine_count);
-
     print!(
         "{}x{} with {} mines",
         args.width, args.height, args.mine_count
