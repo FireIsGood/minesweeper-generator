@@ -35,7 +35,14 @@ pub fn generate_tile(
     }
 }
 
-pub fn generate_grid(args: &MinesweeperArguments) -> MinesweeperGrid {
+pub fn generate_grid(args: &MinesweeperArguments) -> Option<MinesweeperGrid> {
+    // Make sure it's possible to place all mines
+    let board_area = args.width * args.height;
+    let mine_total_count = args.mine_count + args.anti_mine_count;
+    if board_area <= mine_total_count {
+        return None;
+    }
+
     let mut grid: MinesweeperGrid =
         vec![vec![TileContent::Empty; args.height as usize]; args.width as usize];
 
@@ -47,7 +54,7 @@ pub fn generate_grid(args: &MinesweeperArguments) -> MinesweeperGrid {
         generate_tile(&mut grid, &args, TileContent::AntiMine);
     }
 
-    grid
+    Some(grid)
 }
 
 fn count_adjacent_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> (i32, i32) {

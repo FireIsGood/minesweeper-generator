@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, fmt};
 
 pub struct MinesweeperArguments {
     pub spoiler_char: String,
@@ -26,32 +26,72 @@ impl MinesweeperArguments {
     }
 }
 
-pub fn get_args() -> Option<MinesweeperArguments> {
+#[derive(Debug)]
+pub enum ArgError {
+    NoSpoilerChar,
+    NoWidth,
+    NoHeight,
+    NoMines,
+    NonNumericSize,
+    NonNumericMineCount,
+    NegativeMineCount,
+    BoardTooSmall,
+}
+
+impl fmt::Display for ArgError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let error_message = match self {
+            ArgError::NoSpoilerChar => "no spoiler character provided",
+            ArgError::NoWidth => "no width provided",
+            ArgError::NoHeight => "no height provided",
+            ArgError::NoMines => "no mine count provided",
+            ArgError::NonNumericSize => "size is not a number",
+            ArgError::NonNumericMineCount => "mine count is not a number",
+            ArgError::NegativeMineCount => "mine count is negative",
+            ArgError::BoardTooSmall => "board is not large enough for mines",
+        };
+        write!(f, "{}", error_message)
+    }
+}
+
+pub fn get_args() -> Result<MinesweeperArguments, ArgError> {
     let args: Vec<String> = env::args().collect();
 
-    let spoiler_char: String = args.get(1)?.into();
-    let width: i32 = args.get(2)?.parse().ok()?;
-    let height: i32 = args.get(3)?.parse().ok()?;
-    let mine_count: i32 = args.get(4)?.parse().ok()?;
+    let spoiler_char: String = args.get(1).ok_or(ArgError::NoSpoilerChar)?.into();
+    let width: i32 = args
+        .get(2)
+        .ok_or(ArgError::NoWidth)?
+        .parse()
+        .map_err(|_| ArgError::NonNumericSize)?;
+    let height: i32 = args
+        .get(3)
+        .ok_or(ArgError::NoHeight)?
+        .parse()
+        .map_err(|_| ArgError::NonNumericSize)?;
+    let mine_count: i32 = args
+        .get(4)
+        .ok_or(ArgError::NoMines)?
+        .parse()
+        .map_err(|_| ArgError::NonNumericMineCount)?;
     // Default is 0
-    let anti_mine_count: i32 = args.get(5).unwrap_or(&"0".to_owned()).parse().ok()?;
+    let anti_mine_count: i32 = args
+        .get(5)
+        .unwrap_or(&"0".to_owned())
+        .parse()
+        .map_err(|_| ArgError::NonNumericMineCount)?;
 
-    Some(MinesweeperArguments::new(
+    if anti_mine_count < 0 || mine_count < 0 {
+        return Err(ArgError::NegativeMineCount);
+    }
+    if width * height > 90 {
+        return Err(ArgError::BoardTooSmall);
+    }
+
+    Ok(MinesweeperArguments::new(
         spoiler_char,
         width,
         height,
         mine_count,
         anti_mine_count,
     ))
-}
-
-pub fn valid_arguments(args: &MinesweeperArguments) -> Result<(), String> {
-    if args.anti_mine_count < 0 || args.mine_count < 0 {
-        return Err("Negative mines".to_owned());
-    }
-    if args.width * args.height > 90 {
-        return Err("Board too large".to_owned());
-    }
-
-    Ok(())
 }
