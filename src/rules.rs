@@ -2,10 +2,10 @@ use crate::args::Args;
 
 /// Print the rules for the given argument's rule set
 pub fn print_rules(args: &Args) {
-    print_mine_count(&args);
-    print_mine_rules(&args);
+    print_mine_count(args);
+    print_mine_rules(args);
     println!();
-    print_adjacency_rules(&args);
+    print_adjacency_rules(args);
     println!();
 }
 

@@ -56,10 +56,10 @@ pub fn generate_grid(args: &Args) -> Option<MinesweeperGrid> {
 
     // Generate the mines
     for _ in 1..=args.mine_count {
-        generate_tile(&mut grid, &args, TileContent::Mine);
+        generate_tile(&mut grid, args, TileContent::Mine);
     }
     for _ in 1..=args.anti_mine_count {
-        generate_tile(&mut grid, &args, TileContent::AntiMine);
+        generate_tile(&mut grid, args, TileContent::AntiMine);
     }
 
     Some(grid)
@@ -74,7 +74,7 @@ fn count_mines(grid: &MinesweeperGrid, x: i32, y: i32, args: &Args) -> (i32, i32
 }
 
 /// Counts adjacent mines
-fn count_adjacent_mines(grid: &Vec<Vec<TileContent>>, x: i32, y: i32) -> (i32, i32) {
+fn count_adjacent_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> (i32, i32) {
     let mut mine_count = 0;
     let mut anti_mine_count = 0;
 
@@ -150,7 +150,7 @@ pub fn print_grid(grid: Option<MinesweeperGrid>, args: Args) {
             }
             print!("{}", args.spoiler_str);
         }
-        print!("\n");
+        println!();
     }
 }
 
