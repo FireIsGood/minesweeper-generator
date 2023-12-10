@@ -36,8 +36,8 @@ fn print_mine_rules(args: &Args) {
 
     let has_anti_mines: bool = args.anti_mine_count > 0;
     let rules = match has_anti_mines {
-        true => basic_rules,
-        false => expanded_rules,
+        true => expanded_rules,
+        false => basic_rules,
     };
 
     println!("{}", rules);
