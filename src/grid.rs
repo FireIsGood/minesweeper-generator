@@ -11,13 +11,13 @@ pub enum TileContent {
 
 type MinesweeperGrid = Vec<Vec<TileContent>>;
 
-pub fn get_random_tile(width: u8, height: u8) -> (usize, usize) {
+fn get_random_tile(width: u8, height: u8) -> (usize, usize) {
     let random_width = rand::thread_rng().gen_range(0..width);
     let random_height = rand::thread_rng().gen_range(0..height);
     (random_width as usize, random_height as usize)
 }
 
-pub fn generate_tile(grid: &mut MinesweeperGrid, args: &Args, tile_type: TileContent) {
+fn generate_tile(grid: &mut MinesweeperGrid, args: &Args, tile_type: TileContent) {
     loop {
         let (random_width, random_height) = get_random_tile(args.width, args.height);
         let random_tile = grid[random_width][random_height];
