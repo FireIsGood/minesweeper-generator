@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use crate::args::MinesweeperArguments;
+use crate::args::Args;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TileContent {
@@ -11,17 +11,13 @@ pub enum TileContent {
 
 type MinesweeperGrid = Vec<Vec<TileContent>>;
 
-pub fn get_random_tile(width: i32, height: i32) -> (usize, usize) {
+pub fn get_random_tile(width: u8, height: u8) -> (usize, usize) {
     let random_width = rand::thread_rng().gen_range(0..width);
     let random_height = rand::thread_rng().gen_range(0..height);
     (random_width as usize, random_height as usize)
 }
 
-pub fn generate_tile(
-    grid: &mut MinesweeperGrid,
-    args: &MinesweeperArguments,
-    tile_type: TileContent,
-) {
+pub fn generate_tile(grid: &mut MinesweeperGrid, args: &Args, tile_type: TileContent) {
     loop {
         let (random_width, random_height) = get_random_tile(args.width, args.height);
         let random_tile = grid[random_width][random_height];
@@ -35,7 +31,7 @@ pub fn generate_tile(
     }
 }
 
-pub fn generate_grid(args: &MinesweeperArguments) -> Option<MinesweeperGrid> {
+pub fn generate_grid(args: &Args) -> Option<MinesweeperGrid> {
     // Make sure it's possible to place all mines
     let board_area = args.width * args.height;
     let mine_total_count = args.mine_count + args.anti_mine_count;
@@ -57,9 +53,19 @@ pub fn generate_grid(args: &MinesweeperArguments) -> Option<MinesweeperGrid> {
     Some(grid)
 }
 
-fn count_adjacent_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> (i32, i32) {
+/// Counts adjacent mines at a coordinate given a rule
+fn count_mines(grid: &MinesweeperGrid, x: i32, y: i32, args: &Args) -> (i32, i32) {
+    match args.count_rules {
+        crate::args::CountRules::Adjacent => count_adjacent_mines(grid, x, y),
+        crate::args::CountRules::Knight => count_knight_mines(grid, x, y),
+    }
+}
+
+/// Counts adjacent mines
+fn count_adjacent_mines(grid: &Vec<Vec<TileContent>>, x: i32, y: i32) -> (i32, i32) {
     let mut mine_count = 0;
     let mut anti_mine_count = 0;
+
     for x_offset in -1..=1 {
         for y_offset in -1..=1 {
             let x_check = x - x_offset;
@@ -77,37 +83,73 @@ fn count_adjacent_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> (i32, i32) {
     (mine_count, anti_mine_count)
 }
 
-pub fn print_grid(grid: MinesweeperGrid, args: MinesweeperArguments) {
+/// Counts knight step mines
+fn count_knight_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> (i32, i32) {
+    let mut mine_count = 0;
+    let mut anti_mine_count = 0;
+    let coordinate_list = [
+        (1, 2), // Top right
+        (2, 1),
+        (2, -1), // Bottom right
+        (1, -2),
+        (-1, -2), // Bottom left
+        (-2, -1),
+        (-2, 1), // Top left
+        (-1, 2),
+    ];
+    for (x_offset, y_offset) in coordinate_list {
+        let x_check = x - x_offset;
+        let y_check = y - y_offset;
+        match grid
+            .get(x_check as usize)
+            .and_then(|g: &Vec<TileContent>| g.get(y_check as usize))
+        {
+            Some(TileContent::Mine) => mine_count += 1,
+            Some(TileContent::AntiMine) => anti_mine_count += 1,
+            _ => {}
+        }
+    }
+    (mine_count, anti_mine_count)
+}
+
+/// Print a grid if it exists
+pub fn print_grid(grid: Option<MinesweeperGrid>, args: Args) {
+    if grid.is_none() {
+        return;
+    }
+    let grid = grid.unwrap();
+
     let mine_str = ":boom:";
     let anti_mine_str = ":rosette:";
+
     // Temporary basic print
     for x in 0..args.width {
         for y in 0..args.height {
             let tile = grid.get(x as usize).unwrap().get(y as usize).unwrap();
-            print!("{}", args.spoiler_char);
+            print!("{}", args.spoiler_str);
             // Tile itself
             match tile {
                 TileContent::Mine => print!("{}", mine_str),
                 TileContent::AntiMine => print!("{}", anti_mine_str),
                 TileContent::Empty => print!(
                     "{}",
-                    number_to_emoji(count_adjacent_mines(&grid, x.into(), y.into()), &args)
+                    number_to_emoji(count_mines(&grid, x.into(), y.into(), &args), &args)
                 ),
             }
-            print!("{}", args.spoiler_char);
+            print!("{}", args.spoiler_str);
         }
         print!("\n");
     }
 }
 
-fn number_to_emoji((mines, anti_mines): (i32, i32), args: &MinesweeperArguments) -> String {
+fn number_to_emoji((mines, anti_mines): (i32, i32), args: &Args) -> String {
     let total_mines = mines - anti_mines;
 
     // If playing with anti mines, use extended zeroes
     if args.anti_mine_count != 0 {
         // Case of true zero
         if mines == 0 && anti_mines == 0 {
-            return ":zero:".to_owned();
+            return ":blue_square:".to_owned();
         }
 
         // Case of false zero
@@ -133,7 +175,7 @@ fn number_to_emoji((mines, anti_mines): (i32, i32), args: &MinesweeperArguments)
         -3 => ":regional_indicator_c:",
         -2 => ":regional_indicator_b:",
         -1 => ":regional_indicator_a:",
-        0 => ":zero:",
+        0 => ":blue_square:",
         1 => ":one:",
         2 => ":two:",
         3 => ":three:",
