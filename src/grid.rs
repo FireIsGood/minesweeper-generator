@@ -137,6 +137,7 @@ fn count_knight_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> AdjacentMineCou
         (-2, 1), // Top left
         (-1, 2),
     ];
+
     for (x_offset, y_offset) in coordinate_list {
         let x_check = x - x_offset;
         let y_check = y - y_offset;
@@ -149,6 +150,7 @@ fn count_knight_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> AdjacentMineCou
             _ => {}
         }
     }
+
     (mine_count, anti_mine_count)
 }
 
