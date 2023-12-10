@@ -1,13 +1,13 @@
 mod args;
-mod rules;
 mod grid;
+mod rules;
 
 use clap::Parser;
-use rules::print_rules;
 
 use crate::{
     args::Args,
     grid::{generate_grid, print_grid},
+    rules::print_rules,
 };
 
 const MAX_BOARD_SIZE: u8 = 90;
