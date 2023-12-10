@@ -1,5 +1,9 @@
+//! Argument parsing logic.
 use clap::Parser;
 
+/// Counting rules enum for the different game modes
+///
+/// The default mode is Adjacent which is the same as a normal game of minesweeper.
 #[derive(clap::ValueEnum, Clone, Debug, Default)]
 pub enum CountRules {
     #[default]
@@ -7,6 +11,9 @@ pub enum CountRules {
     Knight,
 }
 
+/// Argument struct.
+///
+/// Uses Clap to derive parsing for the arguments. This adds the `--help` sub-command.
 #[derive(Parser, Debug)]
 #[clap(version)]
 pub struct Args {

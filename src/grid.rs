@@ -1,7 +1,12 @@
+//! Grid generation and printing logic.
 use rand::Rng;
 
 use crate::{args::Args, MAX_BOARD_SIZE};
 
+/// Content of a tile as used in the pure grid.
+///
+/// Tiles are stored as just having mines, anti-mines, or nothing. The grid printing functions
+/// handle the mine count numbers.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TileContent {
     Empty,
@@ -9,14 +14,26 @@ pub enum TileContent {
     AntiMine,
 }
 
+/// 2d vector pure grid representation.
+///
+/// Represents the grid as a 2d vector of `TileContent`.
 type MinesweeperGrid = Vec<Vec<TileContent>>;
 
+/// Adjacent mine count.
+///
+/// Counts mines and anti-mines for translation to string.
+type AdjacentMineCount = (i32, i32);
+
+/// Helper function go generate a random grid coordinate.
 fn get_random_tile(width: u8, height: u8) -> (usize, usize) {
     let random_width = rand::thread_rng().gen_range(0..width);
     let random_height = rand::thread_rng().gen_range(0..height);
     (random_width as usize, random_height as usize)
 }
 
+/// Generates a given event on a random empty tile in the grid.
+///
+/// This requires that the grid is not full which is handled by the `generate_grid` function.
 fn generate_tile(grid: &mut MinesweeperGrid, args: &Args, tile_type: TileContent) {
     loop {
         let (random_width, random_height) = get_random_tile(args.width, args.height);
@@ -31,6 +48,9 @@ fn generate_tile(grid: &mut MinesweeperGrid, args: &Args, tile_type: TileContent
     }
 }
 
+/// Returns an a MinesweeperGrid if the board area requirements are met.
+///
+/// There must be more grid slots than mines to stop infinite loops when placing mines.
 pub fn generate_grid(args: &Args) -> Option<MinesweeperGrid> {
     let board_area = args.width * args.height;
     let mine_total_count = args.mine_count + args.anti_mine_count;
@@ -65,16 +85,21 @@ pub fn generate_grid(args: &Args) -> Option<MinesweeperGrid> {
     Some(grid)
 }
 
-/// Counts adjacent mines at a coordinate given a rule
-fn count_mines(grid: &MinesweeperGrid, x: i32, y: i32, args: &Args) -> (i32, i32) {
+/// Counts adjacent mines at a coordinate given a rule.
+///
+/// This uses one of the counting rules depending on the arguments given. It is called for each
+/// grid coordinate.
+fn count_mines(grid: &MinesweeperGrid, x: i32, y: i32, args: &Args) -> AdjacentMineCount {
     match args.count_rules {
         crate::args::CountRules::Adjacent => count_adjacent_mines(grid, x, y),
         crate::args::CountRules::Knight => count_knight_mines(grid, x, y),
     }
 }
 
-/// Counts adjacent mines
-fn count_adjacent_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> (i32, i32) {
+/// Counts adjacent mines.
+///
+/// This is the basic 8 adjacent tile rule as in normal minesweeper.
+fn count_adjacent_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> AdjacentMineCount {
     let mut mine_count = 0;
     let mut anti_mine_count = 0;
 
@@ -95,10 +120,13 @@ fn count_adjacent_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> (i32, i32) {
     (mine_count, anti_mine_count)
 }
 
-/// Counts knight step mines
-fn count_knight_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> (i32, i32) {
+/// Counts knight move adjacent mines.
+///
+/// This is a special rule that counts tiles that are away by 1 knight move.
+fn count_knight_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> AdjacentMineCount {
     let mut mine_count = 0;
     let mut anti_mine_count = 0;
+
     let coordinate_list = [
         (1, 2), // Top right
         (2, 1),
@@ -124,7 +152,9 @@ fn count_knight_mines(grid: &MinesweeperGrid, x: i32, y: i32) -> (i32, i32) {
     (mine_count, anti_mine_count)
 }
 
-/// Print a grid if it exists
+/// Print a grid if it exists or returns.
+///
+/// Arguments should match the arguments used to generate the grid.
 pub fn print_grid(grid: Option<MinesweeperGrid>, args: Args) {
     if grid.is_none() {
         return;
@@ -154,7 +184,10 @@ pub fn print_grid(grid: Option<MinesweeperGrid>, args: Args) {
     }
 }
 
-fn number_to_emoji((mines, anti_mines): (i32, i32), args: &Args) -> String {
+/// Convert a given tile's number to an emoji.
+///
+/// If anti-mines are in play, unique medals are used for the first four combination zeroes.
+fn number_to_emoji((mines, anti_mines): AdjacentMineCount, args: &Args) -> String {
     let total_mines = mines - anti_mines;
 
     // If playing with anti mines, use extended zeroes

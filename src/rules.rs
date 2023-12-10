@@ -1,6 +1,12 @@
+//! Rules printing logic.
 use crate::args::Args;
 
-/// Print the rules for the given argument's rule set
+/// Print the rules for the given argument's rule set.
+///
+/// Mine count will only display anti-mines if they exist, other rules will be hidden unless they
+/// are relevant.
+///
+/// The adjacency rules prints the rules of the current mode.
 pub fn print_rules(args: &Args) {
     print_mine_count(args);
     print_mine_rules(args);
@@ -9,6 +15,10 @@ pub fn print_rules(args: &Args) {
     println!();
 }
 
+/// Mine count printing.
+///
+/// Writes the board size with the number of mines. Anti-mines are not mentioned unless they are
+/// included.
 fn print_mine_count(args: &Args) {
     print!(
         "{}x{} with {} mines",
@@ -21,6 +31,9 @@ fn print_mine_count(args: &Args) {
     }
 }
 
+/// Mine rules printing.
+///
+/// Prints the rules of the game depending on if anti-mines are included.
 fn print_mine_rules(args: &Args) {
     let basic_rules = "\
     - :boom: is a mine, meaning you lose\n\
@@ -43,6 +56,9 @@ fn print_mine_rules(args: &Args) {
     println!("{}", rules);
 }
 
+/// Adjacency rules printing.
+///
+/// Rules are found by searching for the `count_rules` in the arguments.
 fn print_adjacency_rules(args: &Args) {
     let explanation = match args.count_rules {
         crate::args::CountRules::Adjacent => "1 tile away in any direction",
@@ -51,7 +67,7 @@ fn print_adjacency_rules(args: &Args) {
 
     println!("Adjacency rule set: {:?}", args.count_rules);
     println!(
-        "- Mines will be counted as adjacent if they are {}",
+        "- Mines will be counted as adjacent **ONLY** if they are {}",
         explanation
     );
 }
