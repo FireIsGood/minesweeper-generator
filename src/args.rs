@@ -10,10 +10,7 @@ pub enum CountRules {
 #[derive(Parser, Debug)]
 #[clap(version)]
 pub struct Args {
-    /// String that makes the inside text clickable
-    #[arg(short, long, default_value = "||")]
-    pub spoiler_str: String,
-
+    /// Adjacency counting rules
     #[arg(short, long, default_value_t, value_enum)]
     pub count_rules: CountRules,
 
@@ -32,4 +29,8 @@ pub struct Args {
     /// Number of anti-mines
     #[arg(short, long, default_value_t = 0)]
     pub anti_mine_count: u8,
+
+    /// String that makes the inside text a spoiler block
+    #[arg(short, long, default_value = "||")]
+    pub spoiler_str: String,
 }
