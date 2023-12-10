@@ -18,15 +18,15 @@ pub struct Args {
     pub count_rules: CountRules,
 
     /// Width of the board
-    #[arg(short = 'W', long)]
+    #[arg(short = 'W', long, default_value_t = 5)]
     pub width: u8,
 
     /// Height of the board
-    #[arg(short = 'H', long)]
+    #[arg(short = 'H', long, default_value_t = 5)]
     pub height: u8,
 
     /// Number of mines
-    #[arg(short, long)]
+    #[arg(short, long, default_value_t = 4)]
     pub mine_count: u8,
 
     /// Number of anti-mines
