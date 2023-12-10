@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use crate::args::Args;
+use crate::{args::Args, MAX_BOARD_SIZE};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TileContent {
@@ -32,10 +32,22 @@ fn generate_tile(grid: &mut MinesweeperGrid, args: &Args, tile_type: TileContent
 }
 
 pub fn generate_grid(args: &Args) -> Option<MinesweeperGrid> {
-    // Make sure it's possible to place all mines
     let board_area = args.width * args.height;
     let mine_total_count = args.mine_count + args.anti_mine_count;
-    if board_area <= mine_total_count {
+
+    let too_many_mines: bool = board_area < mine_total_count;
+    let over_max_mine_count: bool = !args.no_limits && board_area > MAX_BOARD_SIZE;
+
+    if too_many_mines {
+        println!("More mines than grid slots!");
+        return None;
+    }
+
+    if over_max_mine_count {
+        println!(
+            "Over {} mines which will not render in Discord, use --no-limits to override.",
+            MAX_BOARD_SIZE
+        );
         return None;
     }
 

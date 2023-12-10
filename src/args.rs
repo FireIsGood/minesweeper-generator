@@ -33,4 +33,8 @@ pub struct Args {
     /// String that makes the inside text a spoiler block
     #[arg(short, long, default_value = "||")]
     pub spoiler_str: String,
+
+    /// Uncap board size
+    #[arg(long, default_value_t = false)]
+    pub no_limits: bool,
 }

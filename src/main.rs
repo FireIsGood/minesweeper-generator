@@ -10,6 +10,8 @@ use crate::{
     grid::{generate_grid, print_grid},
 };
 
+const MAX_BOARD_SIZE: u8 = 90;
+
 fn main() {
     // Generate variables
     let args = Args::parse();
@@ -17,7 +19,6 @@ fn main() {
 
     // Return if the grid is invalid
     if grid.is_none() {
-        println!("Grid could not be generated");
         return;
     }
 

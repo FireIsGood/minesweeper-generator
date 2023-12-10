@@ -4,24 +4,24 @@ A minesweeper text generator written in Rust. Generates a game of minefield for
 Discord's emoji style.
 
 The regular rule set of Minesweeper is implied, but you can add an optional
-number of anti-mines.
-
-Unformatted output for a 6x6 grid with 3 mines and 4 anti-mines:
+number of anti-mines or change adjacency rules with flags.
 
 ```text
-Minesweeper generator!
-6x6 with 3 mines and 4 anti-mines
-- Zero tiles :zero: are actually 0
+5x5 with 2 mines and 2 anti-mines
+- :boom: and :rosette: are mines and anti-mines, meaning you lose
+- Zero tiles :blue_square: have no adjacent mines
 - Medals :medal: are a numbered combination of mines equaling zero (:first_place: is 1 mine 1 anti, :second_place: is 2 mine 2 anti, etc. to 3, further are generic)
-- Number tiles :one: are a positive combination of mines
-- Letter tiles :regional_indicator_a: are a negative combination of mines
+- Number tiles :one: are a positive combination of mines (2 mines and 1 anti-mine is :one:)
+- Letter tiles :regional_indicator_a: are a negative combination of mines (1 mine and 2 anti-mines is :regional_indicator_a:)
 
-||:rosette:||||:first_place:||||:boom:||||:one:||||:zero:||||:zero:||
-||:regional_indicator_a:||||:first_place:||||:first_place:||||:first_place:||||:regional_indicator_a:||||:zero:||
-||:zero:||||:one:||||:first_place:||||:rosette:||||:regional_indicator_a:||||:first_place:||
-||:zero:||||:one:||||:boom:||||:second_place:||||:boom:||||:rosette:||
-||:zero:||||:one:||||:first_place:||||:rosette:||||:regional_indicator_a:||||:first_place:||
-||:zero:||||:zero:||||:regional_indicator_a:||||:regional_indicator_a:||||:regional_indicator_a:||||:zero:||
+Adjacency rule set: Adjacent
+- Mines will be counted as adjacent if they are 1 tile away in any direction
+
+||:one:||||:one:||||:blue_square:||||:blue_square:||||:blue_square:||
+||:boom:||||:one:||||:one:||||:one:||||:one:||
+||:first_place:||||:first_place:||||:one:||||:boom:||||:one:||
+||:rosette:||||:regional_indicator_b:||||:first_place:||||:first_place:||||:one:||
+||:regional_indicator_a:||||:regional_indicator_b:||||:rosette:||||:regional_indicator_a:||||:blue_square:||
 ```
 
 ## Installation
@@ -38,11 +38,40 @@ The binary will be created in `./target/release`.
 
 ## Usage
 
-Run the binary with the following arguments:
+By default, a grid of 5x5 with 4 mines is generated. You can use different
+options that are found with the `--help` argument.
+
+Settings include:
+
+- Spoiler string
+- Width
+- Height
+- Mine count
+- Anti-mine count
+
+Run the binary as normal:
 
 ```bash
-minesweeper-generator [spoiler text] [width] [height] [mine count] [anti mine count?]
+# Default settings of 5x5 with 4 mines
+minesweeper-generator
+
+# Display help
+minesweeper-generator --help
+
+# Generate a 10x9 board with 14 mines
+minesweeper-generator -W 10 -H 9 -m 14
+
+# Generate a 20x20 board with 200 mines, 200 anti-mines, and knight counting
+# --no-limits is used to enable over 200 grid tiles
+minesweeper-generator -W 20 -H 20 --no-limits -m 200 -a 200
 ```
+
+## Limitations
+
+Discord only allows for 99 emotes to be rendered in a message, so the program
+will not allow you to generate an area of over 90 tiles by default.
+
+If you wish to generate larger boards, use the `--no-limits` flag.
 
 ## Contributing
 
