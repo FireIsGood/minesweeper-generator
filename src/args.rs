@@ -11,9 +11,14 @@ pub enum CountRules {
     Knight,
 }
 
-/// Argument struct.
-///
-/// Uses Clap to derive parsing for the arguments. This adds the `--help` sub-command.
+// Argument struct.
+//
+// Uses Clap to derive parsing for the arguments. This adds the `--help` sub-command.
+//
+// This has to be separate so that it doesn't show up in the clap help command, but that also
+// means the docs won't get this... Strange!
+//
+/// Minesweeper Generator
 #[derive(Parser, Debug)]
 #[clap(version)]
 pub struct Args {
