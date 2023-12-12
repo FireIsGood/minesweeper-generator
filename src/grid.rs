@@ -167,8 +167,8 @@ pub fn print_grid(grid: Option<MinesweeperGrid>, args: Args) {
     let anti_mine_str = ":rosette:";
 
     // Temporary basic print
-    for x in 0..args.width {
-        for y in 0..args.height {
+    for y in 0..args.height {
+        for x in 0..args.width {
             let tile = grid.get(x as usize).unwrap().get(y as usize).unwrap();
             print!("{}", args.spoiler_str);
             // Tile itself
