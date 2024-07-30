@@ -42,8 +42,16 @@ pub struct Args {
     #[arg(short, long, default_value_t = 0)]
     pub anti_mine_count: u8,
 
+    /// String representing a mine
+    #[arg(long, default_value = ":boom:")]
+    pub mine_str: String,
+
+    /// String representing an anti-mine
+    #[arg(long, default_value = ":rosette:")]
+    pub anti_mine_str: String,
+
     /// String that makes the inside text a spoiler block
-    #[arg(short, long, default_value = "||")]
+    #[arg(long, default_value = "||")]
     pub spoiler_str: String,
 
     /// Uncap board size

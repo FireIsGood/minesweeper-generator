@@ -163,8 +163,8 @@ pub fn print_grid(grid: Option<MinesweeperGrid>, args: Args) {
     }
     let grid = grid.unwrap();
 
-    let mine_str = ":boom:";
-    let anti_mine_str = ":rosette:";
+    let mine_str = &args.mine_str;
+    let anti_mine_str = &args.anti_mine_str;
 
     // Temporary basic print
     for y in 0..args.height {

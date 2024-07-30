@@ -43,6 +43,8 @@ options that are found with the `--help` argument.
 
 Settings include:
 
+- Anti-mine string
+- Mine string
 - Spoiler string
 - Width
 - Height
@@ -64,6 +66,9 @@ minesweeper-generator -W 10 -H 9 -m 14
 # Generate a 20x20 board with 200 mines, 200 anti-mines, and knight counting
 # --no-limits is used to enable over 200 grid tiles
 minesweeper-generator -W 20 -H 20 --no-limits -m 200 -a 200
+
+# Generate a board with a custom mine string
+minesweeper-generator --mine-str :fish:
 ```
 
 ## Limitations
