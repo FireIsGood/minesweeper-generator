@@ -71,6 +71,12 @@ minesweeper-generator -W 20 -H 20 --no-limits -m 200 -a 200
 minesweeper-generator --mine-str :fish:
 ```
 
+Since the text output is printed to standard out, you can pipe the text into your favorite clipboard program:
+
+```bash
+minesweeper-generator | wl-copy
+```
+
 ## Limitations
 
 Discord only allows for 99 emotes to be rendered in a message, so the program
