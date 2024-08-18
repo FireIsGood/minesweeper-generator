@@ -10,15 +10,6 @@ use crate::{
 
 use clap::Parser;
 
-/// Maximum board size that will be allowed by default.
-///
-/// This can be overridden by the user with the flag `--no-limits` if a different messaging app is
-/// used.
-///
-/// Discord max emoji size is 99, so 90 is a soft limit on grid size to stop users from generating
-/// boards that cannot be sent.
-const MAX_BOARD_SIZE: u8 = 90;
-
 /// Main entry from the command line. This does all the parsing and printing.
 ///
 /// Parses the CLI arguments and prints a game if it satisfies the rules.
