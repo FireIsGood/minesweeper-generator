@@ -43,7 +43,7 @@ fn print_mine_rules(args: &Args) {
         args.mine_str,
     );
     let expanded_rules = format!("\
-        - {} are regular mines and {} are anti-mines, meaning you lose\n\
+        - {} are regular mines and {} are anti-mines, meaning you lose if you didn't deduce it (feel free to click if you know it's a mine!)\n\
         - Blank tiles :blue_square: have no adjacent mines\n\
         - Medals :medal:, :second_place:, etc. are a numbered combination of the same number of regular and anti-mines (:first_place: is 1 regular 1 anti, :second_place: is 2 regular 2 anti, etc. to 3, further are generic)\n\
         - Number tiles :one:, :two:, etc. are a positive combination of mines (2 regular and 1 mine is :one:, 1 regular is :one:, 2 regular is :two:)\n\
